@@ -27,11 +27,70 @@ public class World extends JPanel{
         orgQueue.removeAll(delList);
     }
 
+    private void addOrganism(Organism organism){
+        orgQueue.addOrganism(organism);
+    }
+
+    Organism createOrganism(String name, int x, int y){
+
+        if(name.equals("Antelope"))return new Antelope(x, y, this);
+        else if(name.equals("Fox"))return new Fox(x, y, this);
+        else if(name.equals("Sheep"))return new Sheep(x, y, this);
+        else if(name.equals("Tortoise"))return new Tortoise(x, y, this);
+        else if(name.equals("Wolf"))return new Wolf(x, y, this);
+        else if(name.equals("Dandelion"))return new Dandelion(x, y, this);
+        else if(name.equals("Deadly Nightshade"))return new DeadlyNightshade(x, y, this);
+        else if(name.equals("Grass"))return new Grass(x, y, this);
+        else if(name.equals("Guarana"))return new Guarana(x, y, this);
+        else if(name.equals("Heracleum Sosnowskyi"))return new HeracleumSosnowskyi(x, y, this);
+
+        return null;
+    }
+
     private class KeyCatch extends KeyAdapter {
 
         @Override
         public void keyPressed(KeyEvent e) {
             if(player != null)player.changeAction(e);
+        }
+    }
+
+    private class MouseCatch extends MouseAdapter{
+
+        private World parent;
+
+         MouseCatch(World world){
+            super();
+            parent = world;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e){
+
+            String name = graphicInterface.getChosenOrganism();
+
+            int width = getWidth();
+            int height = getHeight();
+
+            int fieldWidth = width / worldSizeX;
+            int fieldHeight = height / worldSizeY;
+
+            int xOffset = (width - (worldSizeX * fieldWidth)) / 2;
+            int yOffset = (height - (worldSizeY * fieldHeight)) / 2;
+
+            if (e.getX() >= xOffset && e.getY() >= yOffset) {
+
+                int column = (e.getX() - xOffset) /fieldWidth;
+                int row = (e.getY() - yOffset) / fieldHeight;
+
+                if (column >= 0 && row >= 0 && column < worldSizeX && row < worldSizeY) {
+
+                   Organism field = parent.isEmpty(column, row);
+                   if(field == null)addOrganism(parent.createOrganism(name, column, row));
+
+                }
+            }
+            parent.repaint();
         }
     }
 
@@ -66,6 +125,7 @@ public class World extends JPanel{
         orgQueue = new InitiativeList();
         delList = new LinkedList<>();
         addKeyListener(new KeyCatch());
+        addMouseListener(new MouseCatch(this));
     }
 
     public void initWorld(){
@@ -113,16 +173,22 @@ public class World extends JPanel{
         for(int i = 0; i < worldSizeY; i++){
             for(int j = 0; j < worldSizeX; j++){
 
-                Rectangle2D rectangle2D = new Rectangle2D.Double(xOffset + (j * fieldWidth),yOffset + (i * fieldHeight),
+               /* Rectangle2D rectangle2D = new Rectangle2D.Double(xOffset + (j * fieldWidth),yOffset + (i * fieldHeight),
                         fieldWidth, fieldHeight);
-                g2d.draw(rectangle2D);
+                g2d.draw(rectangle2D);*/
+
+                int xpoints[] = {25, 145, 25, 145, 25};
+                int ypoints[] = {25, 25, 145, 145, 25};
+                int npoints = 5;
+
+                g.drawPolygon(xpoints, ypoints, npoints);
             }
         }
 
-        for (int i = 0; i < orgQueue.size(); i++){
+       /* for (int i = 0; i < orgQueue.size(); i++){
 
             orgQueue.get(i).draw(g);
-        }
+        }*/
     }
 
     public int getWorldSizeX() {

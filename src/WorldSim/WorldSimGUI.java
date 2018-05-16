@@ -16,6 +16,7 @@ public class WorldSimGUI {
     private JSpinner ySizeSpinner;
     private JButton saveButton;
     private JButton loadButton;
+    private JComboBox organismChooser;
     private int messagesCount = 0;
 
 
@@ -84,6 +85,10 @@ public class WorldSimGUI {
             labelText = labelText.replaceAll("</html>","");
             messagesOutput.setText("<html>"+labelText+message+"</html>");
         }
+    }
+
+    public String getChosenOrganism(){
+        return (String) organismChooser.getSelectedItem();
     }
 
     public static void main(String[] args) {
