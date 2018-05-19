@@ -1,7 +1,8 @@
 package WorldSim.Organisms.Animals;
 
 import WorldSim.Organisms.Organism;
-import WorldSim.World;
+import WorldSim.World.World;
+
 import java.util.Random;
 
 public abstract class Animal extends Organism {
@@ -55,7 +56,7 @@ public abstract class Animal extends Organism {
                     if (posY + i < 0 || posY + i >= maxY)break;
                     if (posX + j >= 0 && posX + j < maxX && world.isEmpty(posX + j, posY + i) == null) {
 
-                        world.addBaby(clone(posX + j, posY + i));
+                        world.addOrganism(clone(posX + j, posY + i));
                         world.setMessage("New " + organism.getName() + " is born");
                         return;
                     }

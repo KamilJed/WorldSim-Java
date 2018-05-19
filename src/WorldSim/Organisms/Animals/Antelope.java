@@ -2,7 +2,7 @@ package WorldSim.Organisms.Animals;
 
 import WorldSim.Organisms.Organism;
 import WorldSim.Organisms.Plants.Plant;
-import WorldSim.World;
+import WorldSim.World.World;
 
 import java.awt.*;
 

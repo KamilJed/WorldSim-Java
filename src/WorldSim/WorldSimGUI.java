@@ -1,5 +1,7 @@
 package WorldSim;
 
+import WorldSim.World.SquareWorld;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.File;
@@ -9,7 +11,7 @@ public class WorldSimGUI {
     private JPanel worldPanel;
     private JPanel worldGUI;
     private JButton newTurnButton;
-    private JPanel world;
+    private JPanel worldView;
     private JLabel messagesOutput;
     private JButton setWorldSizeButton;
     private JSpinner xSizeSpinner;
@@ -17,15 +19,17 @@ public class WorldSimGUI {
     private JButton saveButton;
     private JButton loadButton;
     private JComboBox organismChooser;
+    private JRadioButton squareGridRadioButton;
+    private JRadioButton hexGridRadioButton;
     private int messagesCount = 0;
 
-
     private WorldSimGUI() {
+
         newTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 messagesOutput.setText("");
-                World w = (World)world;
+                WorldView w = (WorldView) worldView;
                 w.newTurn();
                 messagesCount = 0;
             }
@@ -33,8 +37,16 @@ public class WorldSimGUI {
         setWorldSizeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                World w = (World)world;
-                w.initWorld((int)xSizeSpinner.getValue(), (int)ySizeSpinner.getValue());
+
+                if(squareGridRadioButton.isSelected()){
+                    SquareWorld w = new SquareWorld((int)xSizeSpinner.getValue(), (int)ySizeSpinner.getValue(), (WorldView)worldView);
+                    ((WorldView) worldView).setWorld(w);
+                }
+                else{
+
+                }
+
+                worldView.repaint();
             }
         });
         saveButton.addActionListener(new ActionListener() {
@@ -45,7 +57,7 @@ public class WorldSimGUI {
 
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = jfc.getSelectedFile();
-                    World w = (World)world;
+                    WorldView w = (WorldView) worldView;
                     w.saveGame(selectedFile);
                 }
             }
@@ -58,7 +70,7 @@ public class WorldSimGUI {
 
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = jfc.getSelectedFile();
-                    World w = (World)world;
+                    WorldView w = (WorldView) worldView;
                     w.loadGame(selectedFile);
                 }
             }
@@ -66,15 +78,15 @@ public class WorldSimGUI {
     }
 
     private void createUIComponents() {
-        world = new World(this);
+        worldView = new WorldView(this);
         SpinnerModel xSpinner = new SpinnerNumberModel(20, 2, 50, 1);
         SpinnerModel ySpinner = new SpinnerNumberModel(20, 2, 50, 1);
         xSizeSpinner =  new JSpinner(xSpinner);
         ySizeSpinner = new JSpinner(ySpinner);
     }
 
-    private JPanel getWorld() {
-        return world;
+    private JPanel getWorldView() {
+        return worldView;
     }
 
     public void setMessagesOutput(String message) {
@@ -100,8 +112,8 @@ public class WorldSimGUI {
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-        World world = (World) worldSimGUI.getWorld();
-        world.initWorld();
+        WorldView world = (WorldView) worldSimGUI.getWorldView();
+        world.initWorldView();
         frame.setVisible(true);
         world.startGame();
     }

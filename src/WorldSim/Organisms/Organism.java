@@ -2,7 +2,8 @@ package WorldSim.Organisms;
 
 import WorldSim.Organisms.Animals.Animal;
 import WorldSim.Organisms.Plants.Plant;
-import WorldSim.World;
+import WorldSim.World.World;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -10,12 +11,11 @@ public abstract class Organism {
     protected int strength = 0;
     protected int initiative = 0;
     protected int posX, posY;
-    protected Image image;
     protected World world;
-    protected int fieldWidth;
-    protected int fieldHeight;
-    protected  int xOffset;
-    protected int yOffset;
+    protected double fieldWidth;
+    protected double fieldHeight;
+    protected  double xOffset;
+    protected double yOffset;
     protected boolean grownUp = false;
     protected boolean alive = true;
     protected Color color;
@@ -145,8 +145,6 @@ public abstract class Organism {
         String flat = "";
 
         flat += getName();
-        flat += ' ';
-        flat += initiative;
         flat += ' ';
         flat += strength;
         flat += ' ';
