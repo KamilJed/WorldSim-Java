@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 
 public abstract class World {
 
+    protected int width;
+    protected int height;
     protected InitiativeList orgQueue;
     protected LinkedList<Organism> delList;
     protected int worldSizeX, worldSizeY;
@@ -45,24 +47,6 @@ public abstract class World {
         else if(name.equals("Heracleum Sosnowskyi"))return new HeracleumSosnowskyi(x, y, this);
 
         return null;
-    }
-
-    protected void deflatOrganism(String org, int stght, int x, int y){
-
-        if(org.equals("Fox"))orgQueue.addOrganism(new Fox(x, y, this, stght));
-        else if(org.equals("Sheep")) orgQueue.addOrganism(new Sheep(x, y, this, stght));
-        else if(org.equals("Wolf")) orgQueue.addOrganism(new Wolf(x, y, this, stght));
-        else if(org.equals("Tortoise")) orgQueue.addOrganism(new Tortoise(x, y, this, stght));
-        else if(org.equals("Dandelion")) orgQueue.addOrganism(new Dandelion(x, y, this, stght));
-        else if(org.equals("DeadlyNightshade")) orgQueue.addOrganism(new DeadlyNightshade(x, y, this, stght));
-        else if(org.equals("Grass")) orgQueue.addOrganism(new Grass(x, y, this, stght));
-        else if(org.equals("Guarana")) orgQueue.addOrganism(new Guarana(x, y, this, stght));
-        else if(org.equals("HeracleumSosnowskyi")) orgQueue.addOrganism(new HeracleumSosnowskyi(x, y, this, stght));
-        else if(org.equals("Anetelope")) orgQueue.addOrganism(new Antelope(x, y, this, stght));
-    }
-
-    protected void deflatOrganism(int stght, int x, int y, boolean special, int turns){
-        orgQueue.addOrganism(new Human(x, y, this, stght, special, turns));
     }
 
     public World(WorldView worldView){
@@ -102,6 +86,24 @@ public abstract class World {
                 else if (character == 10) orgQueue.addOrganism(new HeracleumSosnowskyi(j, i, this));
             }
         }
+    }
+
+    public void deflatOrganism(String org, int stght, int x, int y){
+
+        if(org.equals("Fox"))orgQueue.addOrganism(new Fox(x, y, this, stght));
+        else if(org.equals("Sheep")) orgQueue.addOrganism(new Sheep(x, y, this, stght));
+        else if(org.equals("Wolf")) orgQueue.addOrganism(new Wolf(x, y, this, stght));
+        else if(org.equals("Tortoise")) orgQueue.addOrganism(new Tortoise(x, y, this, stght));
+        else if(org.equals("Dandelion")) orgQueue.addOrganism(new Dandelion(x, y, this, stght));
+        else if(org.equals("DeadlyNightshade")) orgQueue.addOrganism(new DeadlyNightshade(x, y, this, stght));
+        else if(org.equals("Grass")) orgQueue.addOrganism(new Grass(x, y, this, stght));
+        else if(org.equals("Guarana")) orgQueue.addOrganism(new Guarana(x, y, this, stght));
+        else if(org.equals("HeracleumSosnowskyi")) orgQueue.addOrganism(new HeracleumSosnowskyi(x, y, this, stght));
+        else if(org.equals("Antelope")) orgQueue.addOrganism(new Antelope(x, y, this, stght));
+    }
+
+    public void deflatOrganism(int stght, int x, int y, boolean special, int turns){
+        orgQueue.addOrganism(new Human(x, y, this, stght, special, turns));
     }
 
     public abstract void drawWorld(Graphics g);
@@ -149,16 +151,6 @@ public abstract class World {
         worldView.setMessage(message);
     }
 
-/*    public void initWorld(int sizeX, int sizeY){
-        orgQueue.clear();
-        delList.clear();
-        isHuman = false;
-        player = null;
-        worldSizeY = sizeY;
-        worldSizeX = sizeX;
-        initWorld();
-    }*/
-
     public void setHuman(Human human){
         isHuman = true;
         player = human;
@@ -167,62 +159,6 @@ public abstract class World {
     public void delHuman(){
         isHuman = false;
         player = null;
-    }
-
-    public void saveGame(File file){
-
-        try(PrintWriter out = new PrintWriter(file.getAbsolutePath())){
-
-            out.println(isHex);
-            out.println(worldSizeX);
-            out.println(worldSizeY);
-            for(Organism org : orgQueue){
-                out.println(org.getFlatOrganism());
-            }
-
-            out.println("e");
-        }
-        catch(FileNotFoundException e){
-            e.printStackTrace();
-        }
-    }
-
-    public void loadGame(File file){
-
-        orgQueue.clear();
-        delList.clear();
-        isHuman = false;
-        player = null;
-
-        try {
-
-            Scanner sc = new Scanner(file);
-            isHex = sc.nextBoolean();
-            worldSizeX = sc.nextInt();
-            worldSizeY = sc.nextInt();
-            worldView.setHex(isHex);
-
-            while(sc.hasNextLine()){
-                String s = sc.next();
-                if(s.equals("e"))break;
-                int stght = sc.nextInt();
-                int x = sc.nextInt();
-                int y = sc.nextInt();
-                if(s.equals("Human")){
-                    boolean special = sc.nextBoolean();
-                    int turns = sc.nextInt();
-                    deflatOrganism(stght, x, y, special, turns);
-                }
-                else deflatOrganism(s, stght, x, y);
-            }
-        }
-        catch(NoSuchElementException e){
-            initWorld();
-            setMessage("Corrupted save file");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public int getWidth(){
@@ -235,5 +171,19 @@ public abstract class World {
 
     public void changeAction(KeyEvent e){
         if(player != null)player.changeAction(e);
+    }
+
+    public boolean isHexWorld(){
+        return isHex;
+    }
+
+    public InitiativeList getOrgQueue() {
+        return orgQueue;
+    }
+
+    public void clear(){
+        orgQueue.clear();
+        isHuman = false;
+        player = null;
     }
 }

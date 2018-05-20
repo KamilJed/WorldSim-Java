@@ -1,5 +1,6 @@
 package WorldSim;
 
+import WorldSim.World.HexWorld;
 import WorldSim.World.SquareWorld;
 
 import javax.swing.*;
@@ -42,8 +43,9 @@ public class WorldSimGUI {
                     SquareWorld w = new SquareWorld((int)xSizeSpinner.getValue(), (int)ySizeSpinner.getValue(), (WorldView)worldView);
                     ((WorldView) worldView).setWorld(w);
                 }
-                else{
-
+                else if(hexGridRadioButton.isSelected()){
+                    HexWorld w = new HexWorld((WorldView)worldView);
+                    ((WorldView) worldView).setWorld(w);
                 }
 
                 worldView.repaint();

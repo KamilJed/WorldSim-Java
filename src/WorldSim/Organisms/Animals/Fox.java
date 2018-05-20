@@ -27,17 +27,6 @@ public class Fox extends Animal {
     }
 
     @Override
-    public void draw(Graphics g){
-        Graphics2D graphics2D = (Graphics2D)g;
-
-        Rectangle2D rect = new Rectangle2D.Double(xOffset + (posX * fieldWidth),yOffset + (posY * fieldHeight),
-                fieldWidth, fieldHeight);
-
-        graphics2D.setColor(Color.PINK);
-        graphics2D.fill(rect);
-    }
-
-    @Override
     public Organism clone(int x, int y){
         return new Fox(x, y, world);
     }

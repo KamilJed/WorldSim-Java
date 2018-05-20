@@ -1,5 +1,7 @@
 package WorldSim;
 
+import WorldSim.Organisms.Organism;
+import WorldSim.World.HexWorld;
 import WorldSim.World.SquareWorld;
 import WorldSim.World.World;
 
@@ -7,10 +9,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class WorldView extends JPanel{
 
-    private boolean isHex;
     private WorldSimGUI graphicInterface;
     private World world;
 
@@ -85,27 +88,64 @@ public class WorldView extends JPanel{
         graphicInterface.setMessagesOutput(message+"<br>");
     }
 
- /*   public void initWorld(int sizeX, int sizeY){
-        world.initWorld(sizeX, sizeY);
-        requestFocusInWindow();
-        repaint();
-    }*/
-
     public void saveGame(File file){
 
-       world.saveGame(file);
-       setMessage("Game saved");
+        try(PrintWriter out = new PrintWriter(file.getAbsolutePath())){
+
+            out.println(world.isHexWorld());
+            out.println(world.getWorldSizeX());
+            out.println(world.getWorldSizeY());
+            for(Organism org : world.getOrgQueue()){
+                out.println(org.getFlatOrganism());
+            }
+
+            out.println("e");
+        }
+        catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     public void loadGame(File file){
 
-        world.loadGame(file);
-        requestFocusInWindow();
-        repaint();
-    }
+        int worldSizeX, worldSizeY;
+        boolean isHex;
 
-    public void setHex(boolean hex) {
-        isHex = hex;
+        try {
+
+            Scanner sc = new Scanner(file);
+            isHex = sc.nextBoolean();
+            worldSizeX = sc.nextInt();
+            worldSizeY = sc.nextInt();
+
+            if(isHex)world = new HexWorld(this);
+            else world = new SquareWorld(worldSizeX, worldSizeY, this);
+
+            world.clear();
+
+            while(sc.hasNextLine()){
+                String s = sc.next();
+                if(s.equals("e"))break;
+                int stght = sc.nextInt();
+                int x = sc.nextInt();
+                int y = sc.nextInt();
+                if(s.equals("Human")){
+                    boolean special = sc.nextBoolean();
+                    int turns = sc.nextInt();
+                    world.deflatOrganism(stght, x, y, special, turns);
+                }
+                else world.deflatOrganism(s, stght, x, y);
+            }
+        }
+        catch(NoSuchElementException e){
+            world = new SquareWorld(this);
+            setMessage("Corrupted save file");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        repaint();
     }
 
     public void setWorld(World world) {

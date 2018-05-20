@@ -1,11 +1,15 @@
 package WorldSim.Organisms;
 
+import Shapes.Hexagon;
 import WorldSim.Organisms.Animals.Animal;
 import WorldSim.Organisms.Plants.Plant;
 import WorldSim.World.World;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.tan;
 
 public abstract class Organism {
     protected int strength = 0;
@@ -19,6 +23,11 @@ public abstract class Organism {
     protected boolean grownUp = false;
     protected boolean alive = true;
     protected Color color;
+    protected int hexHeight;
+    protected int radius;
+    protected int side;
+    protected int t;
+    protected Hexagon hexCreator = new Hexagon();
 
     public Organism(int x, int y, World world){
         posX = x;
@@ -26,6 +35,10 @@ public abstract class Organism {
         this.world = world;
         int width = world.getWidth();
         int height = world.getHeight();
+        hexHeight = 30;
+        radius = hexHeight/2;
+        side = (int)(radius/cos(Math.toRadians(30)));
+        t = (int)(radius*tan(Math.toRadians(30)));
         fieldWidth = width / world.getWorldSizeX();
         fieldHeight = height / world.getWorldSizeY();
         xOffset = (width - (world.getWorldSizeX() * fieldWidth)) / 2;
@@ -57,11 +70,20 @@ public abstract class Organism {
 
         Graphics2D graphics2D = (Graphics2D)g;
 
-        Rectangle2D rect = new Rectangle2D.Double(xOffset + (posX * fieldWidth),yOffset + (posY * fieldHeight),
-                fieldWidth, fieldHeight);
+        if(world.isHexWorld()){
 
-        graphics2D.setColor(color);
-        graphics2D.fill(rect);
+            Polygon hex = hexCreator.createPolygon(posX, posY);
+            graphics2D.setColor(color);
+            graphics2D.fill(hex);
+        }
+        else{
+
+            Rectangle2D rect = new Rectangle2D.Double(xOffset + (posX * fieldWidth),yOffset + (posY * fieldHeight),
+                    fieldWidth, fieldHeight);
+            graphics2D.setColor(color);
+            graphics2D.fill(rect);
+        }
+
     }
 
     public void kill(){

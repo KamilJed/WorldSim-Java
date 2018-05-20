@@ -9,32 +9,36 @@ import java.awt.geom.Rectangle2D;
 
 public class SquareWorld extends World {
 
+    private double fieldWidth;
+    private double fieldHeight;
+    private double xOffset;
+    private double yOffset;
+
     public SquareWorld(WorldView worldView){
         super(worldView);
         isHex = false;
-        worldView.setHex(isHex);
     }
 
     public SquareWorld(int sizeX, int sizeY, WorldView worldView){
         super(sizeX, sizeY, worldView);
         isHex = false;
-        worldView.setHex(isHex);
+    }
+
+    @Override
+    public void initWorld(){
+        width = getWidth();
+        height = getHeight();
+        fieldWidth = width / worldSizeX;
+        fieldHeight = height / worldSizeY;
+        xOffset = (width - (worldSizeX * fieldWidth)) / 2;
+        yOffset = (height - (worldSizeY * fieldHeight)) / 2;
+        super.initWorld();
     }
 
     @Override
     public void drawWorld(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
-
-        int width = getWidth();
-        int height = getHeight();
-
-        double fieldWidth = width / worldSizeX;
-        double fieldHeight = height / worldSizeY;
-
-        double xOffset = (width - (worldSizeX * fieldWidth)) / 2;
-        double yOffset = (height - (worldSizeY * fieldHeight)) / 2;
-
 
         for(int i = 0; i < worldSizeY; i++){
             for(int j = 0; j < worldSizeX; j++){
@@ -53,15 +57,6 @@ public class SquareWorld extends World {
 
     @Override
     public void addOnClick(MouseEvent e, String name){
-
-        int width = getWidth();
-        int height = getHeight();
-
-        double fieldWidth = width / worldSizeX;
-        double fieldHeight = height / worldSizeY;
-
-        double xOffset = (width - (worldSizeX * fieldWidth)) / 2;
-        double yOffset = (height - (worldSizeY * fieldHeight)) / 2;
 
         if (e.getX() >= xOffset && e.getY() >= yOffset) {
 
